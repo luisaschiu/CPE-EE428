@@ -4,6 +4,8 @@ import numpy as np
 
 # Part I.
 img = cv.imread("frames/000000.jpg")
+print(img)
+print(img.shape)
 cv.imshow("image1", img)
 cv.waitKey(0)
 grayscale1 = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
