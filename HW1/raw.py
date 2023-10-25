@@ -75,4 +75,3 @@ def curve_and_quantize(image,inv_gamma=0.85):
   out_img = clipped_img*255
   out_img = out_img.astype(np.uint8)
   return out_img
-
