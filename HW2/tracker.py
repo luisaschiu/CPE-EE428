@@ -17,7 +17,7 @@ wand = MagicWand(calibration_path=args.calibration,R=args.ball_radius)
 cap = cv2.VideoCapture(args.video)
 
 trajectory_lst = []
-dist_center_lst = []
+dist_lst = []
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:
@@ -26,7 +26,7 @@ while cap.isOpened():
     if len(lst) == 1:
         trajectory_lst.append(lst[0])
     if len(lst) == 2:
-        dist_center_lst.append(lst)
+        dist_lst.append(lst)
     cv2.imshow('frame',frame)
     if cv2.waitKey(1) == ord('q'):
         break
@@ -40,6 +40,17 @@ for i in range (0, len(trajectory_lst)):
     y_array[i] = trajectory_lst[i][1]
     z_array[i] = trajectory_lst[i][2]
 ax.plot3D(x_array, y_array, z_array, 'black')
-#plt.show()
-print(dist_center_lst)
+plt.show()
 
+if len(dist_lst) != 0:
+    dist_array = np.empty((len(dist_lst)))
+    for i in range (0, len(dist_lst)):
+        x1 = dist_lst[i][0][0]
+        x2 = dist_lst[i][1][0]
+        y1 = dist_lst[i][0][1]
+        y2 = dist_lst[i][1][1]
+        z1 = dist_lst[i][0][2]
+        z2 = dist_lst[i][1][2]
+        dist_array[i] = ((x2-x1)**2 + (y2-y1)**2 + (z2-z1)**2)**(1/2)
+    avg_dst = np.mean(dist_array)
+    print(avg_dst)

@@ -114,9 +114,9 @@ class MagicWand:
         out_list = []
         circles_detected_list = self.detect_ball(image)
         for circle in circles_detected_list:
-            out_list.append(circle)
             x, y, r = circle[0], circle[1], circle[2]
             world_coords = self.calculate_ball_position(x, y, r)
+            out_list.append(world_coords)
             X, Y, Z = world_coords[0], world_coords[1], world_coords[2]
             self.draw_ball(image, x, y, r, Z)
             self.draw_bounding_cube(image, X, Y, Z)
