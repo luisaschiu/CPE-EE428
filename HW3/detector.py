@@ -39,21 +39,10 @@ class FeatureDetector:
     """
     grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     I = grayscale/255 # Normalize to values 0 - 1
-    '''
-        out_array = np.array([])
-        for i in range(1, self.nblur+1):
-          sigma1 = self.sigma*((1.5)**i)
-          G1 = gaussian_filter(I, sigma1)
-          sigma2 = self.sigma*((1.5)**(i+1))
-          G2 = gaussian_filter(I, sigma2)
-          out_array = np.append(out_array, G2 - G1)
-          print(out_array)
-    #      np.stack()
-    '''
     out_lst = []
-    sigma3 = self.sigma*((1.5)**1)
+    sigma3 = self.sigma*((1.5)**0)
     G3 = gaussian_filter(I, sigma3)
-    for i in range(1, self.nblur+1):
+    for i in range(0, self.nblur):
       sigma4 = self.sigma*((1.5)**(i+1))
       G4 = gaussian_filter(I, sigma4)
       diff = G4-G3
@@ -81,8 +70,15 @@ class FeatureDetector:
         Returns:
             List of features (level,y,x)
     """
-    pass
-  
+    features = []
+    min = minimum_filter(responses, size=(3, 3, 3))
+    max = maximum_filter(responses, size=(3, 3, 3))
+    locations = np.argwhere(((responses == min) | (responses == max)) & (abs(responses) > self.thresh))
+    for level, y, x in locations:
+      features.append((level, y, x))
+    return features
+
+
   def draw_features(self,image,features,color=[0,0,255]):
     """ Draw features on an image.
         
@@ -97,5 +93,10 @@ class FeatureDetector:
         Returns:
             Image with features drawn
     """
-    pass
+    for feature in features:
+      level, y, x = feature
+      r = self.sigma*((1.5)**(level))
+      image1 = cv2.circle( image, (int(x), int(y)), int(r), color, 2)
+      new_image = cv2.circle( image1, (int(x), int(y)), 0, color, -1)
+    return new_image
 
