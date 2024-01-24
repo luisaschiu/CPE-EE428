@@ -76,10 +76,8 @@ class RANSAC:
             random_idx = np.random.choice(len(ref_pts), 4, replace=False)
             random_ref_pts = ref_pts[random_idx]
             random_query_pts = query_pts[random_idx]
-
             # Compute homography using cv.find Homography, method = 0
             H, _ = cv2.findHomography(random_ref_pts, random_query_pts, 0, self.inlier_threshold)
-
             # Count the number of inliers for this homography
             mask = self.compute_inlier_mask(H, ref_pts, query_pts)
             num_inliers = np.sum(mask)
@@ -151,6 +149,7 @@ class Tracker:
             vid_pts = np.float32([ kp_q[m.trainIdx].pt for m in good ])
             ransac = RANSAC()
             H, _ = ransac.find_homography(src_pts, vid_pts)
+            # H, _ = cv2.findHomography(src_pts, vid_pts, cv2.RANSAC, self.inlier_threshold)
             return H
 
     def augment_frame(self,frame,H):
